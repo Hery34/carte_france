@@ -39,7 +39,7 @@
     "components/Navbar.js",
     "components/MapDepartements.js",
     "components/MapRegions.js",
-    "app/page.js"
+    "app/carte/page.js"
   ],
   "exclude": [
     "node_modules"

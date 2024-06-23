@@ -56,6 +56,28 @@ export default function GetRegions({ sourceTable, columnSelected, columnName, se
                 value={selectedRegions.map(region => ({ value: region, label: region }))}
                 placeholder="Tapez au moins 3 lettres pour rechercher une région..."
                 noOptionsMessage={() => "Aucune région trouvée"}
+                styles={{
+                    option: (provided) => ({
+                        ...provided,
+                        color: '#1181C8',
+                    }),
+                    multiValue: (provided) => ({
+                        ...provided,
+                        color: '#1181C8',
+                    }),
+                    singleValue: (provided) => ({
+                        ...provided,
+                        color: '#1181C8',
+                    }),
+                    placeholder: (provided) => ({
+                        ...provided,
+                        color: '#1181C8',
+                    }),
+                    input: (provided) => ({
+                        ...provided,
+                        color: '#1181C8',
+                    }),
+                }}
             />
             <h3>Vos choix : </h3>
             <ul style={{
@@ -63,6 +85,7 @@ export default function GetRegions({ sourceTable, columnSelected, columnName, se
                 listStyle: 'none',
                 padding: 0,
                 margin: 0,
+                color: 'red'
             }}>
                 {selectedRegions.map((regionName) => (
                     <li key={regionName}>{regionName}</li>

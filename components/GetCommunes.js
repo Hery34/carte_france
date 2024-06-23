@@ -49,8 +49,31 @@ export default function GetCommunes({ onSelectedOptionsChange }) {
                 value={selected}
                 onChange={handleSelectChange}
                 onInputChange={setInputValue}
+                color
                 placeholder="Tapez au moins 3 lettres pour rechercher..."
                 noOptionsMessage={() => "Aucune commune trouvée"}
+                styles={{
+                    option: (provided) => ({
+                        ...provided,
+                        color: '#1181C8',
+                    }),
+                    multiValue: (provided) => ({
+                        ...provided,
+                        color: '#1181C8',
+                    }),
+                    singleValue: (provided) => ({
+                        ...provided,
+                        color: '#1181C8',
+                    }),
+                    placeholder: (provided) => ({
+                        ...provided,
+                        color: '#1181C8',
+                    }),
+                    input: (provided) => ({
+                        ...provided,
+                        color: '#1181C8',
+                    }),
+                }}
             />
             <h3>Communes sélectionnées :</h3>
             <ul style={{

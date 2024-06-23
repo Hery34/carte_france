@@ -56,8 +56,30 @@ export default function GetDepartement({ sourceTable, columnSelected, columnName
                     onChange={handleDepartementChange}
                     onInputChange={handleInputChange}
                     value={selectedDepartements.map(dept => ({ value: dept, label: dept }))}
-                    placeholder="Tapez pour rechercher un département..."
+                    placeholder="Tapez au moins 3 lettres pour rechercher un département..."
                     noOptionsMessage={() => "Aucun département trouvé"}
+                    styles={{
+                        option: (provided) => ({
+                            ...provided,
+                            color: '#1181C8',
+                        }),
+                        multiValue: (provided) => ({
+                            ...provided,
+                            color: '#1181C8',
+                        }),
+                        singleValue: (provided) => ({
+                            ...provided,
+                            color: '#1181C8',
+                        }),
+                        placeholder: (provided) => ({
+                            ...provided,
+                            color: '#1181C8',
+                        }),
+                        input: (provided) => ({
+                            ...provided,
+                            color: '#1181C8',
+                        }),
+                    }}
                 />
                 <h3>Vos choix : </h3>
                 <ul style={{
@@ -65,6 +87,7 @@ export default function GetDepartement({ sourceTable, columnSelected, columnName
                     listStyle: 'none',
                     padding: 0,
                     margin: 0,
+                    color: 'red'
                 }}>
                     {selectedDepartements.map((departementName) => (
                         <li key={departementName}>{departementName}</li>
