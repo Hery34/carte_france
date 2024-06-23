@@ -4,40 +4,47 @@ import Select from 'react-select';
 import { supabase } from './supabaseClient';
 
 export default function GetRegions({ sourceTable, columnSelected, columnName, selectedRegions, setSelectedRegions }) {
-    const [data, setData] = useState([]);
-    const [regions, setRegions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [options, setOptions] = useState([]);
+    const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {
-        async function fetchData() {
-            let { data, error } = await supabase
-                .from(sourceTable)
-                .select(columnSelected);
-            if (error) {
-            } else {
-                setData(data);
-                const regions = [...new Set(data.map(item => item[columnName]))];
-                setRegions(regions);
-                setOptions(regions.map(region => ({
-                    value: region,
-                    label: region
-                })));
-            }
+        // Charger les régions initiales si nécessaire
+        if (selectedRegions.length > 0 && options.length === 0) {
+            setOptions(selectedRegions.map(region => ({
+                value: region,
+                label: region
+            })));
         }
+    }, [selectedRegions]);
 
-        fetchData();
-    }, []);
+    const loadOptions = async (inputValue) => {
+        if (inputValue.length < 2) return;
+
+        const { data, error } = await supabase.rpc('search_data', {
+            search_column: columnName,
+            search_table: sourceTable,
+            search_text: inputValue
+        });
+
+        if (error) {
+            console.error('Error fetching suggestions:', error);
+        } else {
+            setOptions(data.map(item => ({
+                value: item.value,
+                label: item.label
+            })));
+        }
+    };
+
+    const handleInputChange = (newValue) => {
+        setInputValue(newValue);
+        loadOptions(newValue);
+    };
 
     const handleRegionChange = (selectedOptions) => {
         const selectedNames = selectedOptions.map(option => option.value);
         setSelectedRegions(selectedNames);
     };
-    const selectedOptions = selectedRegions.map(regionName => ({
-        value: regionName,
-        label: regionName,
-    }));
 
     return (
         <>
@@ -45,7 +52,10 @@ export default function GetRegions({ sourceTable, columnSelected, columnName, se
                 options={options}
                 isMulti
                 onChange={handleRegionChange}
-                value={selectedOptions}
+                onInputChange={handleInputChange}
+                value={selectedRegions.map(region => ({ value: region, label: region }))}
+                placeholder="Tapez au moins 3 lettres pour rechercher une région..."
+                noOptionsMessage={() => "Aucune région trouvée"}
             />
             <h3>Vos choix : </h3>
             <ul style={{
@@ -61,4 +71,3 @@ export default function GetRegions({ sourceTable, columnSelected, columnName, se
         </>
     );
 }
-

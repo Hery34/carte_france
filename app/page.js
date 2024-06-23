@@ -6,21 +6,44 @@ import { useState, useEffect } from 'react';
 import MapRegions from "@/components/MapRegions";
 import GetDepartement from "@/components/getDepartements";
 import MapDepartement from "@/components/MapDepartements";
+import GetCommunes from "@/components/GetCommunes";
 import { supabase } from "@/components/supabaseClient";
-import Sum from '@/components/sums';
+import Sums from '@/components/sums';
+import MyFooter from "@/components/MyFooter";
 
 export default function Index() {
   const [selectedRegions, setSelectedRegions] = useState([]);
   const [data, setData] = useState([]);
   const [selectedDepartements, setSelectedDepartements] = useState([]);
+  const [value, setValue] = useState(1);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [showDiv1, setShowDiv1] = useState(false);
+  const [showDiv2, setShowDiv2] = useState(false);
 
+
+  const handleChange = (event) => {
+    setValue(event.target.value);
+    if (event.target.value === '0') {
+      setShowDiv1(true);
+      setShowDiv2(false);
+    } else if (event.target.value === '2') {
+      setShowDiv1(false);
+      setShowDiv2(true);
+    } else {
+      setShowDiv1(false);
+      setShowDiv2(false);
+    }
+  };
   useEffect(() => {
     if (selectedRegions.length > 0) {
       getDepartementsFromRegions(selectedRegions).then((departements) => {
-        setSelectedDepartements(departements);
+        setSelectedDepartements(prevDepartements => {
+          // Combine les départements hérités avec ceux déjà sélectionnés
+          return [...new Set([...prevDepartements, ...departements])];
+        });
       });
     } else {
-      setSelectedDepartements([]); // Réinitialise les départements sélectionnés si aucune région n'est sélectionnée
+      setSelectedDepartements([]);
     }
   }, [selectedRegions]);
 
@@ -36,52 +59,93 @@ export default function Index() {
     }
   };
 
+  const handleSelectedOptionsChange = (newSelectedOptions) => {
+    setSelectedOptions(newSelectedOptions)
+  }
+
+
   return (
     <div className="flex-1 w-full flex flex-col gap-20 items-center">
       <NavBar />
-      <div className="RegionsDepartements">
-        <div style={{ display: 'flex' }} className="regions">
-          <div style={{ width: '50%' }}>
-            <GetRegions
-              sourceTable="france_population"
-              columnSelected="*"
-              columnName="region"
-              selectedRegions={selectedRegions}
-              setSelectedRegions={setSelectedRegions}
-            />
-          </div>
-          <div style={{ width: '50%' }}>
-            <MapRegions
-              selectedRegions={selectedRegions}
-              setSelectedRegions={setSelectedRegions}
-            />
-          </div>
-        </div>
-        <div style={{ display: 'flex' }} className="departements">
-          <div style={{ width: '50%' }}>
-            <GetDepartement
-              sourceTable="france_population"
-              columnSelected="*"
-              columnName="departement"
-              selectedDepartements={selectedDepartements}
-              setSelectedDepartements={setSelectedDepartements}
-              setData={setData}
-            />
-          </div>
-          <div style={{ width: '50%' }}>
-            <MapDepartement
-              selectedDepartements={selectedDepartements}
-              setSelectedDepartements={setSelectedDepartements}
-            />
-          </div>
-        </div>
+      <h1 className="text-center text-rose_violet text-3xl font-bold m-8">
+        Critères géographiques
+      </h1>
+      <div style={{ display: 'flex', justifyContent: 'center' }} >
+        <label style={{ marginRight: '10px' }} className='font-bold'>Sélectionner par Régions et Départements</label>
+        <input
+          type="range"
+          min="0"
+          max="2"
+          value={value}
+          onChange={handleChange}
+          style={{
+            appearance: 'none',
+            width: '100px',
+            height: '25px',
+            backgroundColor: '#d84985',
+            outline: 'none',
+            borderRadius: '25px',
+            border: 'none',
+          }}
+          className='mb-8'
+        />
+        <label style={{ marginLeft: '10px' }} className='font-bold'>
+          Sélectionner par Code Postal
+        </label>
       </div>
+      {showDiv1 && (
+        <><div className="RegionsDepartements">
+          <div style={{ display: 'flex' }} className="regions">
+            <div style={{ width: '50%' }}>
+              <GetRegions
+                sourceTable="france_population"
+                columnSelected="*"
+                columnName="region"
+                selectedRegions={selectedRegions}
+                setSelectedRegions={setSelectedRegions} />
+            </div>
+            <div style={{ width: '50%' }}>
+              <MapRegions
+                selectedRegions={selectedRegions}
+                setSelectedRegions={setSelectedRegions} />
+            </div>
+          </div>
+          <div style={{ display: 'flex' }} className="departements">
+            <div style={{ width: '50%' }}>
+              <GetDepartement
+                sourceTable="france_population"
+                columnSelected="*"
+                columnName="departement"
+                selectedDepartements={selectedDepartements}
+                setSelectedDepartements={setSelectedDepartements}
+                inheritedDepartements={selectedDepartements}
+                setData={setData}
+              />
+            </div>
+            <div style={{ width: '50%' }}>
+              <MapDepartement
+                selectedDepartements={selectedDepartements}
+                setSelectedDepartements={setSelectedDepartements} />
+            </div>
+          </div>
+        </div>
+          <Sums
+            table="france_population"
+            choiceFilter={selectedDepartements}
+            filterVariable="departement" /></>
+      )}
+      {showDiv2 && (
+        <div className="CP">
+          <GetCommunes
+            selectedOptions={selectedOptions}
+            onSelectedOptionsChange={handleSelectedOptionsChange}
+          />
+        </div>
 
-      <Sum
-        table="france_population"
-        choiceFilter={selectedDepartements}
-        filterVariable="departement"
-      />
+      )}
+      <div className="flex justify-center"></div>
+      <MyFooter></MyFooter>
     </div>
+
   );
 }

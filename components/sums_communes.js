@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/components/supabaseClient';
 
-export default function Sum({ table, choiceFilter, filterVariable }) {
+export default function SumsCommunes({ table, choiceFilter, filterVariable }) {
     const [totalPopulation, setTotalPopulation] = useState(0);
 
     useEffect(() => {
         const fetchTotalPopulation = async () => {
-            const { data, error } = await supabase.rpc('get_sums', {
-                selecteddepartements: choiceFilter
+            const { data, error } = await supabase.rpc('get_sums_communes', {
+                selectedcommunes: choiceFilter
             });
 
             if (error) {
