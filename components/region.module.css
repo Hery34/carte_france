@@ -1,0 +1,10 @@
+.region:hover {
+    fill: #1181C8;
+}
+
+.hovered {
+    display: flex;
+    height: 100vh;
+    text-align: center;
+    -ms-text-align-last: right;
+}
