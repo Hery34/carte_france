@@ -29,10 +29,10 @@ export default function SumsCommunes({ table, choiceFilter, filterVariable }) {
     return (
         <div style={{ border: '1px solid blue', padding: '10px', margin: '20px' }}>
             <h2 className="text-center text-rose_violet text-3xl font-bold">
-                Découvrez le nombre d'habitants de votre séléction
+                Le 1er janvier 2022,
             </h2>
             <h3 className='text-center text-2xl font-bold'>
-                {`Il y a exactement `} {totalPopulation.toLocaleString('fr-FR')} habitants dans votre séléction
+                {`Il y avait exactement `} {totalPopulation.toLocaleString('fr-FR')} habitants dans votre sélection
             </h3>
         </div>
     );

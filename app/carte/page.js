@@ -79,7 +79,7 @@ export default function Carte() {
             appearance: 'none',
             width: '100px',
             height: '25px',
-            backgroundColor: '#1181C8',
+            backgroundColor: '#FF0000',
             outline: 'none',
             borderRadius: '25px',
             border: 'none',
